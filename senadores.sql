@@ -82,3 +82,59 @@ DESCRIBE senadores;
 
 ALTER TABLE senadores
 ADD PRIMARY KEY (ID);
+/* Creacion de las tablas*/
+
+
+create table provincia(
+	id_prov int auto_increment not null primary key,
+    nombre varchar(30) not null
+); 
+
+create table bloque_politico(
+	id_bloque int auto_increment not null primary key,
+	nombre_bloque varchar(30) not null
+);
+
+create table partido_politico(
+	id_partido int auto_increment not null primary key,
+    nombre_partido varchar(30) not null,
+    fk_prov int,
+    constraint fk_partido_prov foreign key (fk_prov) references provincia(id_prov)
+);
+
+create table senador(
+	id_senador INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    nombre_sen varchar(30) not null,
+    apellido_sen varchar(30) not null,
+    email varchar(30) not null,
+    num_tel_sen varchar(30) not null,
+    ig_sen varchar(20),
+    youtube_sen varchar(39),
+    fb_sen varchar(50),
+    foto_sen JSON,
+    dni_sen int not null,
+    fk_prov int,
+    fk_partido int,
+    fk_bloque int,
+    constraint fk_sen_prov foreign key (fk_prov) references provincia(id_prov),
+    constraint fk_sen_partido foreign key (fk_partido) references partido_politico(id_partido),
+    constraint fk_sen_bloque foreign key (fk_bloque) references bloque_politico(id_bloque)
+);
+
+create table periodo(
+	id_per int auto_increment not null primary key,
+    inicio_legal date,
+    final_legal date,
+    inicio_real date,
+    final_real date,
+    observaciones text,
+    fk_sen int,
+    constraint fk_per_sen foreign key (fk_sen) references senador(id_senador)
+);
+
+/* creacion de un alter table para agregar una columna twitter
+alter table senador add column twitter_sen varchar(39); */
+
+
+
+
