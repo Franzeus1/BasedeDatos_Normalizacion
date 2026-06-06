@@ -135,6 +135,121 @@ create table periodo(
 /* creacion de un alter table para agregar una columna twitter
 alter table senador add column twitter_sen varchar(39); */
 
+/*modificacion del tamaño de los varchar por error de calculo
+ALTER TABLE provincia MODIFY COLUMN nombre varchar(60) not null;
+ALTER TABLE senador MODIFY COLUMN email VARCHAR(50) NOT NULL;
+ALTER TABLE senador MODIFY COLUMN num_tel_sen VARCHAR(25) NOT NULL;
+ALTER TABLE senador MODIFY COLUMN ig_sen VARCHAR(100);
+ALTER TABLE senador MODIFY COLUMN twitter_sen VARCHAR(70);
+ALTER TABLE senador MODIFY COLUMN youtube_sen VARCHAR(80);
+ALTER TABLE senador MODIFY COLUMN fb_sen VARCHAR(75);
+ALTER TABLE senador MODIFY COLUMN foto_sen VARCHAR(80);
+ALTER TABLE bloque_politico MODIFY COLUMN nombre_bloque VARCHAR(50) NOT NULL;
+ALTER TABLE partido_politico MODIFY COLUMN nombre_partido VARCHAR(60) NOT NULL;*/
 
+/* transaccion para los insert de la tala provincia*/
+START TRANSACTION;
+
+insert into provincia (nombre) values
+('BUENOS AIRES'),
+('CATAMARCA'),
+('CHACO'),
+('CHUBUT'),
+('CIUDAD AUTÓNOMA DE BUENOS AIRES'),
+('CORRIENTES'),
+('CÓRDOBA'),
+('ENTRE RÍOS'),
+('FORMOSA'),
+('JUJUY'),
+('LA PAMPA'),
+('LA RIOJA'),
+('MENDOZA'),
+('MISIONES'),
+('NEUQUÉN'),
+('RÍO NEGRO'),
+('SALTA'),
+('SAN JUAN'),
+('SAN LUIS'),
+('SANTA CRUZ'),
+('SANTA FE'),
+('SANTIAGO DEL ESTERO'),
+('TIERRA DEL FUEGO, ANTÁRTIDA E ISLAS DEL ATLÁNTICO SUR'),
+('TUCUMÁN');
+
+commit;
+
+/*Gracias a los insert fallidos los id empiezan desde el 25.
+Se utilizó SET FOREIGN_KEY_CHECKS = 0 para deshabilitar temporalmente la verificación de claves foráneas.
+Esto fue necesario para poder truncar la tabla provincia y resetear el AUTO_INCREMENT 
+debido a intentos fallidos de INSERT previos.
+Esta práctica no es recomendable en entornos de producción ya que deshabilita la integridad referencial.
+En nuestro caso fue seguro porque la tabla partido_politico estaba vacía y no había datos relacionados.
+Se volvió a habilitar inmediatamente con SET FOREIGN_KEY_CHECKS = 1.*/
+SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE TABLE provincia;
+SET FOREIGN_KEY_CHECKS = 1;
+ALTER TABLE provincia AUTO_INCREMENT = 1;
+
+select * from provincia; 
+
+/* transaccion para los insert de la tabla bloque_politico*/
+start transaction;
+
+INSERT INTO bloque_politico (nombre_bloque) VALUES
+('CONVICCIÓN FEDERAL'),
+('DESPIERTA CHUBUT'),
+('FRENTE CÍVICO POR SANTIAGO'),
+('FRENTE PRO'),
+('FRENTE RENOVADOR DE LA CONCORDIA SOCIAL'),
+('INDEPENDENCIA'),
+('JUSTICIA SOCIAL FEDERAL'),
+('JUSTICIALISTA'),
+('LA LIBERTAD AVANZA'),
+('LA NEUQUINIDAD'),
+('MOVERE SANTA CRUZ'),
+('PRIMERO LOS SALTEÑOS'),
+('PROVINCIAS UNIDAS'),
+('UCR - UNIÓN CÍVICA RADICAL');
+
+commit;
+
+select * from bloque_politico; 
+
+/* Insert de partidos políticos con su provincia de origen.
+   La columna fk_prov referencia el id_prov de la tabla provincia,
+   donde cada número representa:
+   1=Buenos Aires, 2=Catamarca, 3=Chaco, 4=Chubut, 
+   5=Ciudad Autónoma de Buenos Aires, 6=Corrientes, 7=Córdoba,
+   8=Entre Ríos, 9=Formosa, 10=Jujuy, 11=La Pampa, 12=La Rioja,
+   13=Mendoza, 14=Misiones, 15=Neuquén, 16=Río Negro, 17=Salta,
+   18=San Juan, 19=San Luis, 20=Santa Cruz, 21=Santa Fe,
+   22=Santiago del Estero, 23=Tierra del Fuego, 24=Tucumán */
+START TRANSACTION;
+
+INSERT INTO partido_politico (nombre_partido, fk_prov) VALUES
+('ALIANZA FRENTE DE TODOS', 23),
+('ALIANZA LA LIBERTAD AVANZA', 19),
+('ALIANZA POR SANTA CRUZ', 20),
+('ALIANZA UNIÓN POR LA PATRIA', 1),
+('ECO + VAMOS CORRIENTES', 6),
+('FRENTE CAMBIA MENDOZA', 13),
+('FRENTE CÍVICO POR SANTIAGO', 22),
+('FRENTE DE TODOS', 2),
+('FRENTE FUERZA PATRIA PERONISTA', 22),
+('FRENTE RENOVADOR DE LA CONCORDIA-INNOVACIÓN FEDERAL', 14),
+('FRENTE TODOS', 6),
+('FUERZA ENTRE RÍOS', 8),
+('FUERZA PATRIA', 3),
+('HACEMOS POR CÓRDOBA', 7),
+('JUNTOS POR EL CAMBIO', 1),
+('JUNTOS POR EL CAMBIO CHUBUT', 4),
+('JUSTICIALISTA', 13),
+('LA NEUQUINIDAD', 15),
+('PARTIDO RENOVADOR FEDERAL', 10),
+('PRIMERO LOS SALTEÑOS', 17);
+
+commit;
+
+select * from partido_politico;
 
 
